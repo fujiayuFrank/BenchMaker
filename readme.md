@@ -1,5 +1,9 @@
 # Steps for Generating Your Tailored Benchmark with BenchMaker
 
+With this repository, you can achieve: input any demands for the capability you want to evaluate and receive a high-quality, customized benchmark.
+
+For more details, see *LLM-Powered Benchmark Factory: Reliable, Generic, and Efficient*.
+
 ## Method 1: Run with **Gradio**
 ### Step-1:
 Download all the required libraries and modify the `API_all.py` file as required to configure your API model.
