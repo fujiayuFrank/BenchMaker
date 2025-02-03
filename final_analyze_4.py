@@ -45,7 +45,7 @@ def main_4(dataset_name,generate_model,DataSize,DemoNum):
     plt.figure(figsize=(16, 9))
     plt.imshow(wordcloud, interpolation="bilinear")
     plt.axis("off")
-    plt.savefig("generated_benchmark/API_Com_syn/{}/{}/{}/wordfig.pdf".format(dataset_name,generate_model,sub_name), dpi=300)
+    plt.savefig("generated_benchmark/API_Com_syn/{}/{}/{}/wordfig.jpg".format(dataset_name,generate_model,sub_name), dpi=300)
     result = calculate_shannon_entropy(samples)
     to_output+=f"Lexical - Entropy: {result['Entropy']:.4f}\n\n"
     print(f"Entropy: {result['Entropy']:.4f}")
