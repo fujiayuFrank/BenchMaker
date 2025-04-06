@@ -265,7 +265,7 @@ def main_0(benchmark_name, model,abilities_df, num_options, num_questions):
 
 
 def main():
-    task_name = 'MMLUPro_My_4o'
+    task_name = 'Test'
     with open("task_des/{}.json".format(task_name),'r')as f:
         task = json.load(f)
         f.close()

@@ -399,7 +399,7 @@ def main_1(model,abilities_df,dataset_name,DataSize,DemoNum,DiverNum,OptionNum):
     return to_print
 
 def main():
-    task_name = 'MMLUPro_My_4o'
+    task_name = 'Test'
     with open("task_des/{}.json".format(task_name),'r')as f:
         task = json.load(f)
         f.close()

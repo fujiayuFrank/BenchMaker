@@ -217,7 +217,7 @@ def main_2(dataset_name,model,DemoNum,DiverNum,DataSize):
     return to_return+to_return2
 
 def main():
-    task_name = 'MMLUPro_My'
+    task_name = 'Test'
     with open("task_des/{}.json".format(task_name),'r')as f:
         task = json.load(f)
         f.close()
