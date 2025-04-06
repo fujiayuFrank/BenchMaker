@@ -156,7 +156,7 @@ def main_1_single(model,ability_des,dataset_name,ability,DataSize,DemoNum,DiverN
                 dif_banks=[]
                 for i in range(10):
                     dif_banks.append(dif_bank[int(i/10*len(dif_bank)):int((i+1)/10*len(dif_bank))])
-
+                
                 for tem in attr2:
                     if tem['attribute'] == 'Difficulty':
                         difficulty_set = tem['values']
@@ -277,6 +277,7 @@ def main_1_single(model,ability_des,dataset_name,ability,DataSize,DemoNum,DiverN
                         cur_prompt_sc = raw_prompt + sample_cand['question'] + "\nCandidates:\n" + sample_cand['candiates'] + "\n"
                         while True:
                             try:
+                                print("progress 2")
                                 response, cost = Mod.calc(cur_prompt_sc, n=10, temp=1, model='4omini')
                                 break
                             except Exception as e:

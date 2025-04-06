@@ -135,7 +135,7 @@ def main_0_single(model,task_description,benchmark_name,key):
                             cnt_num+=1
                             response, cost = Mod.calc(cur_prompt1, n=n, temp=temp, model=model)
                             print(response[0])
-                            to_store = get_attr1(response[0])
+                            to_store = get_attr1(response[0][0])
                             if to_store is None:continue
                             with open(dir_name + "/raw_data/{}###{}###{}/attrs/attr1.json".format(major_subject, subject, key), "w") as f:
                                 raw_data = to_store
@@ -167,7 +167,7 @@ def main_0_single(model,task_description,benchmark_name,key):
                                     cnt_num+=1
                                     response, cost = Mod.calc(cur_prompt2, n=n, temp=temp, model=model)
                                     print(response[0])
-                                    to_store_ = get_attr2(response[0])
+                                    to_store_ = get_attr2(response[0][0])
                                     if to_store_ is None:continue
                                     with open(dir_name + "/raw_data/{}###{}###{}/attrs/attr2_{}.json".format(major_subject, subject, key,j), "w") as f:
                                         raw_data = to_store_
@@ -199,7 +199,7 @@ def main_0_single(model,task_description,benchmark_name,key):
                                 cnt_num += 1
                                 response, cost = Mod.calc(cur_prompt2_1, n=n, temp=temp, model=model)
                                 print(response[0])
-                                to_store_ = get_attr2_1(response[0])
+                                to_store_ = get_attr2_1(response[0][0])
                                 if to_store_ is None: continue
                                 with open(dir_name + "/raw_data/{}###{}###{}/attrs/attr2.json".format(major_subject, subject,
                                                                                                          key), "w") as f:
@@ -229,7 +229,7 @@ def main_0_single(model,task_description,benchmark_name,key):
                                 cnt_num+=1
                                 response, cost = Mod.calc(cur_prompt4, n=n, temp=temp, model=model)
                                 print(response[0])
-                                to_store_ = get_attr4(response[0])
+                                to_store_ = get_attr4(response[0][0])
                                 if to_store_ is None:continue
                                 with open(dir_name + "/raw_data/{}###{}###{}/attrs/attr3.json".format(major_subject, subject, key), "w") as f:
                                     raw_data = to_store_
