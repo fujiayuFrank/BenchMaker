@@ -12,6 +12,7 @@ import argparse
 from copy import deepcopy
 from utils import *
 from filelock import FileLock
+nltk.download('punkt_tab')
 def get_faith(s):
     s = s.lower()
     matches = re.findall(r'###(.*?)###', s)
@@ -49,7 +50,7 @@ def process_sample_attr_diffusion(sample):
         attributes = s[1].strip("\n").strip(" ").split("##")
         attributes = {t.split(":")[0]: t.split(":")[1] for t in attributes}
         if len(label)!=1:
-            # print(sample)
+            print(sample)
             return None
     except:
         return None
@@ -62,6 +63,72 @@ def process_sample_attr_diffusion(sample):
         'reasoning':reasoning
     }
 
+def process_sample_attr_diffusion_test(sample):
+    try:
+        # Step 1: Extract analyses
+        try:
+            s = sample.split("##Question:##")
+            analyses = s[0].strip('##Analyses:##').strip()
+        except Exception as e:
+            print("Error in processing analyses:", e)
+            raise
+
+        # Step 2: Extract question
+        try:
+            s = s[1].split("##Reasoning Path:##")
+            question = s[0].strip('Question:').strip()
+        except Exception as e:
+            print("Error in processing question:", e)
+            raise
+
+        # Step 3: Extract reasoning
+        try:
+            s = s[1].split("##Candidates:##")
+            reasoning = s[0].strip('Reasoning Path:').strip()
+        except Exception as e:
+            print("Error in processing reasoning:", e)
+            raise
+
+        # Step 4: Extract candidates
+        try:
+            s = s[1].split('##Right Option:##')
+            candidates = s[0].strip()
+        except Exception as e:
+            print("Error in processing candidates:", e)
+            raise
+
+        # Step 5: Extract label and attributes
+        try:
+            s = s[1].split('##Attributes Used:##')
+            label = s[0].strip()
+            if len(label) != 1:
+                print("Label length is not 1:", label)
+                raise ValueError("Label must be a single character")
+            attributes_str = s[1].strip()
+        except Exception as e:
+            print("Error in processing label or attributes:", e)
+            raise
+
+        # Step 6: Process attributes into a dictionary
+        try:
+            attributes_list = attributes_str.split("##")
+            attributes = {t.split(":")[0]: t.split(":")[1] for t in attributes_list if ":" in t}
+        except Exception as e:
+            print("Error in processing attributes dictionary:", e)
+            raise
+
+    except Exception as overall_exception:
+        print("General failure:", overall_exception)
+        return None
+
+    return {
+        'analyses': analyses,
+        'question': question,
+        'candiates': candidates,  # Note: consider renaming to 'candidates'
+        'label': label,
+        'attributes': attributes,
+        'reasoning': reasoning
+    }
 
 def get_answer(s):
     s = s.lower()
@@ -261,7 +328,7 @@ def main_1_single(model,ability_des,dataset_name,ability,DataSize,DemoNum,DiverN
                         if_flag = 1
                         sample_cands = []
                         for tttt in response:
-                            cur_rep = process_sample_attr_diffusion(tttt)
+                            cur_rep = process_sample_attr_diffusion_test(tttt[0])
                             if cur_rep is None:continue
                             if_flag = 0
                             sample_cands.append(cur_rep)
@@ -278,7 +345,7 @@ def main_1_single(model,ability_des,dataset_name,ability,DataSize,DemoNum,DiverN
                         while True:
                             try:
                                 print("progress 2")
-                                response, cost = Mod.calc(cur_prompt_sc, n=10, temp=1, model='4omini')
+                                response, cost = Mod.calc(cur_prompt_sc, n=10, temp=1, model='gpt-4o-mini')
                                 break
                             except Exception as e:
                                 print(e)
@@ -289,7 +356,7 @@ def main_1_single(model,ability_des,dataset_name,ability,DataSize,DemoNum,DiverN
                         pre_dict = {}
                         for s in response:
                             try:
-                                pre = get_answer(s)
+                                pre = get_answer(s[0])
                             except:
                                 pre = "None"
                             if pre is None: pre = "None"
@@ -311,9 +378,16 @@ def main_1_single(model,ability_des,dataset_name,ability,DataSize,DemoNum,DiverN
                                 cur_prompt = judge_cmp_prompt.replace("{{question}}",sample_cand['question'] + "\nCandidates:\n" + sample_cand['candiates'] + "\n")
                             except:
                                 continue
-                            cur_prompt1 = cur_prompt.replace('{{can1}}',random.choice(pre_dict[sc_pre])).replace('{{can2}}',sample_cand['reasoning'])
-                            cur_prompt2 = cur_prompt.replace('{{can2}}', random.choice(pre_dict[sc_pre])).replace('{{can1}}',
-                                                                                                   sample_cand['reasoning'])
+                            can1 = random.choice(pre_dict[sc_pre])
+                            can1 = " ".join(can1) if isinstance(can1, list) else can1
+                            can2 = sample_cand['reasoning']
+                            can2 = " ".join(can2) if isinstance(can2, list) else can2
+                            cur_prompt1 = cur_prompt.replace('{{can1}}', can1).replace('{{can2}}', can2)
+                            cur_prompt2 = cur_prompt.replace('{{can2}}', can2).replace('{{can1}}', can1)
+
+                            # cur_prompt1 = cur_prompt.replace('{{can1}}',random.choice(pre_dict[sc_pre])).replace('{{can2}}',sample_cand['reasoning'])
+                            # cur_prompt2 = cur_prompt.replace('{{can2}}', random.choice(pre_dict[sc_pre])).replace('{{can1}}',
+                            #                                                                        sample_cand['reasoning'])
                             while True:
                                 try:
                                     judge_response1, cost = Mod.calc(cur_prompt1, n=1, temp=0, model=model)
@@ -322,10 +396,10 @@ def main_1_single(model,ability_des,dataset_name,ability,DataSize,DemoNum,DiverN
                                     print(e)
                                     print("Sleep 10s")
                                     time.sleep(10)
-                            faith1,label1 = get_faith(judge_response1[0])
+                            faith1,label1 = get_faith(judge_response1[0][0])
                             if faith1!=2:
                                 sample_cand['faith'] = faith1
-                                sample_cand['reason'] = judge_response1[0]
+                                sample_cand['reason'] = judge_response1[0][0]
                                 with open("{}/{}.json".format(c_fail_dir, str(cur_idx)+"-"+str(random.randint(0,200))), "w") as f:
                                     sample_cand['attribute'] = att_list
                                     sample_cand["dif_attrbute"] = dif_att_list
@@ -335,16 +409,16 @@ def main_1_single(model,ability_des,dataset_name,ability,DataSize,DemoNum,DiverN
                             while True:
                                 try:
                                     judge_response2, cost = Mod.calc(cur_prompt1, n=1, temp=0, model=model)
-                                    print(response[0])
+                                    print(response[0][0])
                                     break
                                 except Exception as e:
                                     print(e)
                                     print("Sleep 10s")
                                     time.sleep(10)
-                            faith2, label2 = get_faith(judge_response2[0])
+                            faith2, label2 = get_faith(judge_response2[0][0])
                             if faith2!=2:
                                 sample_cand['faith'] = faith2
-                                sample_cand['reason'] = judge_response2[0]
+                                sample_cand['reason'] = judge_response2[0][0]
                                 with open("{}/{}.json".format(c_fail_dir, str(cur_idx)+"-"+str(random.randint(0,200))), "w") as f:
                                     sample_cand['attribute'] = att_list
                                     sample_cand["dif_attrbute"] = dif_att_list
@@ -363,7 +437,7 @@ def main_1_single(model,ability_des,dataset_name,ability,DataSize,DemoNum,DiverN
                             sample_cand['label'] = label1
                             all_rig,all_cnt=0,0
                             for tt in sample_cand['model_predictions']:
-                                if sample_cand['label'].lower()==get_answer(tt).lower():
+                                if sample_cand['label'].lower()==get_answer(tt[0]).lower():
                                     all_rig+=1
                                 all_cnt+=1
                             dif_level = 1 + 10 * (1 - all_rig / all_cnt)
