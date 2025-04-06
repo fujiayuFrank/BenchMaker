@@ -2,8 +2,8 @@ import openai
 import time
 import os
 import json
-openai.api_key = "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"
-# client = openai.OpenAI(api_key = "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")
+openai.api_key = ""
+
 class Get:
     def __init__(self):
         self.prompt = ""
