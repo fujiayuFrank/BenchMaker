@@ -329,7 +329,8 @@ def main_1_single(model,ability_des,dataset_name,ability,DataSize,DemoNum,DiverN
                         if_flag = 1
                         sample_cands = []
                         for tttt in response:
-                            cur_rep = process_sample_attr_diffusion_test(tttt[0])
+                            tttt = " ".join(tttt)
+                            cur_rep = process_sample_attr_diffusion_test(tttt)
                             if cur_rep is None:continue
                             if_flag = 0
                             sample_cands.append(cur_rep)
@@ -438,7 +439,8 @@ def main_1_single(model,ability_des,dataset_name,ability,DataSize,DemoNum,DiverN
                             sample_cand['label'] = label1
                             all_rig,all_cnt=0,0
                             for tt in sample_cand['model_predictions']:
-                                if sample_cand['label'].lower()==get_answer(tt[0]).lower():
+                                tt = " ".join(tt)
+                                if sample_cand['label'].lower()==get_answer(tt).lower():
                                     all_rig+=1
                                 all_cnt+=1
                             dif_level = 1 + 10 * (1 - all_rig / all_cnt)

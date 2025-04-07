@@ -1,1 +1,1 @@
-{"benchmark_name": "Test", "abilities": {"Test_1": "Generate a combination of numbers and strings", "Test_2": "Generate a different combination of numbers, strings, and symbols"}, "model": "gpt-4o-mini", "NumberPerAbility": 10, "DemoNum": 8, "DiverNum": 5, "OptionNum": 4}
+{"benchmark_name": "Test", "abilities": {"Test_1": "Generate a combination of numbers and strings", "Test_2": "Generate a different combination of numbers, strings, and symbols"}, "model": "gpt-4o-mini", "NumberPerAbility": 12, "DemoNum": 8, "DiverNum": 5, "OptionNum": 4}
