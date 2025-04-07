@@ -183,7 +183,7 @@ def main_2(dataset_name,model,DemoNum,DiverNum,DataSize):
                             rig, cnt = 0, 0
                             pre_list=[]
                             for tt in data['model_predictions']:
-                                pre = get_answer(tt)
+                                pre = get_answer(tt[0])
                                 pre_list.append(pre)
                                 if pre.lower() == data['label'].lower():
                                     rig += 1

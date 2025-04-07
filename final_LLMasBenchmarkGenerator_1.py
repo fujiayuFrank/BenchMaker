@@ -242,6 +242,7 @@ def main_1_single(model,ability_des,dataset_name,ability,DataSize,DemoNum,DiverN
                         f.close()
                 repeat_time = DataSize*3
                 while True:
+                    print("The repeat time is:" + str(repeat_time))
                     if repeat_time<=0:break
                     repeat_time-=1
                     begin_direction = 1
