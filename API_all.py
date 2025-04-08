@@ -2,7 +2,10 @@ import openai
 import time
 import os
 import json
-openai.api_key = ""
+from dotenv import load_dotenv
+load_dotenv()
+
+openai.api_key = os.getenv("OpenAI_API_key_self")
 
 class Get:
     def __init__(self):
