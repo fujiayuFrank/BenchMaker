@@ -19,4 +19,5 @@ Specifically, please analyze what the question query should contain and what the
 #### ***Question Content*** Two words with a certain degree of relevance. ***End of Question Content***
 #### ***Answer Choices*** Two choices: "Synonym" and "Not a Synonym." ***End of Answer Choices***
 
+
 Please follow this format and examples to provide a comprehensive and thoughtful analysis, presenting the primary question format for evaluating "{{ability}}" ability. Please strictly adhere to the format and examples provided.
